@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>File Encryption and Decryption</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>File Encryption and Decryption</h1>
+      <form id="encryptionForm">
+        <textarea
+          id="inputData"
+          placeholder="Enter text to encrypt/decrypt..."
+          rows="5"
+          cols="50"
+        ></textarea
+        ><br />
+        <input
+          type="radio"
+          id="encryptRadio"
+          name="operation"
+          value="encrypt"
+          checked
+        />
+        <label for="encryptRadio">Encrypt</label>
+        <input
+          type="radio"
+          id="decryptRadio"
+          name="operation"
+          value="decrypt"
+        />
+        <label for="decryptRadio">Decrypt</label><br />
+        <button type="submit">Submit</button>
+      </form>
+      <div id="output"></div>
+    </div>
+
+    <script>
+      document
+        .getElementById("encryptionForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+
+          let formData = new FormData(this);
+          let operation = formData.get("operation");
+          let url = operation === "encrypt" ? "/encrypt" : "/decrypt";
+          let inputData = formData.get("inputData");
+
+          let response = await fetch(url, {
+            method: "POST",
+            body: inputData,
+            headers: {
+              "Content-Type": "text/plain",
+            },
+          });
+
+          if (response.ok) {
+            let result = await response.text();
+            document.getElementById("output").innerText = result;
+          } else {
+            document.getElementById("output").innerText =
+              "Error: " + response.status;
+          }
+        });
+    </script>
+  </body>
+</html>
